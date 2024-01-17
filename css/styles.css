@@ -1,5 +1,6 @@
 body {
-    background-color: #1a1a1a;
+    background: rgb(10,8,43);
+    background: linear-gradient(90deg, rgba(10,8,43,1) 23%, rgba(40,40,166,1) 63%, rgba(0,142,171,1) 100%);
     color: #ffffff;
     font-family: 'Arial', sans-serif;
     margin: 0;
@@ -58,7 +59,7 @@ section {
 }
 
 h2 {
-    color: #ffcc29;
+    color: #0c8863;
 }
 
 .project-button {
@@ -79,6 +80,24 @@ h2 {
     background-color: #d1b964;
 }
 
+.travel-button {
+    margin-bottom: 10px;
+}
+
+.travel-button a {
+    display: inline-block;
+    padding: 10px 20px;
+    background-color: #0a2b8e;
+    color: #1a1a1a;
+    text-decoration: none;
+    border-radius: 5px;
+    transition: background-color 0.3s;
+}
+
+.travel-button a:hover {
+    background-color: #0b39c0;
+}
+
 .social-media a {
     display: inline-block;
     margin-right: 10px;
@@ -89,7 +108,7 @@ h2 {
 }
 
 .social-media a:hover {
-    color: #ffcc29;
+    color: #ff2929;
 }
 
 .about-content {
