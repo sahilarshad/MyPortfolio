@@ -1,10 +1,11 @@
 import React, { useRef, useEffect } from 'react';
 import './Projects.css';
 
-
-
 export default function Projects() {
   const containerRef = useRef(null);
+  const isDragging = useRef(false);
+  const startX = useRef(0);
+  const scrollLeft = useRef(0);
 
   const scrollByOffset = (offset) => {
     const container = containerRef.current;
@@ -19,6 +20,39 @@ export default function Projects() {
       container.scrollBy({ left: offset, behavior: 'smooth' });
     }
   };
+
+  // Touch drag support
+  useEffect(() => {
+    const container = containerRef.current;
+    if (!container) return;
+
+    const handleTouchStart = (e) => {
+      isDragging.current = true;
+      startX.current = e.touches[0].clientX;
+      scrollLeft.current = container.scrollLeft;
+    };
+
+    const handleTouchMove = (e) => {
+      if (!isDragging.current) return;
+      const x = e.touches[0].clientX;
+      const walk = (startX.current - x); // swipe left = positive
+      container.scrollLeft = scrollLeft.current + walk;
+    };
+
+    const handleTouchEnd = () => {
+      isDragging.current = false;
+    };
+
+    container.addEventListener('touchstart', handleTouchStart);
+    container.addEventListener('touchmove', handleTouchMove);
+    container.addEventListener('touchend', handleTouchEnd);
+
+    return () => {
+      container.removeEventListener('touchstart', handleTouchStart);
+      container.removeEventListener('touchmove', handleTouchMove);
+      container.removeEventListener('touchend', handleTouchEnd);
+    };
+  }, []);
 
   const projects = [
     {
@@ -44,32 +78,23 @@ export default function Projects() {
   ];
 
   return (
-    <>
-      
-      <div className="section">
-        <h2 className="neon">Projects</h2>
-        <div className="carousel-wrapper">
-          <div className="carousel-nav" onClick={() => scrollByOffset(-240)}>&#10094;</div>
-          <div className="carousel-container" ref={containerRef}>
-            <div className="carousel">
-              {projects.map((project, index) => (
-                <div className="carousel-item" key={index}>
-                  {project.title ? (
-                    <>
-                      <h3>{project.title}</h3>
-                      <p>{project.description}</p>
-                    </>
-                  ) : (
-                    <div style={{ height: '100%' }}></div>
-                  )}
-                </div>
-              ))}
-            </div>
+    <div className="section">
+      <h2 className="neon">Projects</h2>
+      <div className="carousel-wrapper">
+        <div className="carousel-nav" onClick={() => scrollByOffset(-240)}>&#10094;</div>
+        <div className="carousel-container" ref={containerRef}>
+          <div className="carousel">
+            {projects.map((project, index) => (
+              <div className="carousel-item" key={index}>
+                <h3>{project.title}</h3>
+                <p>{project.description}</p>
+              </div>
+            ))}
           </div>
-          <div className="carousel-nav" onClick={() => scrollByOffset(240)}>&#10095;</div>
         </div>
-        <p className="note">Use arrows to navigate through projects</p>
+        <div className="carousel-nav" onClick={() => scrollByOffset(240)}>&#10095;</div>
       </div>
-    </>
+      <p className="note">Swipe or use arrows to navigate through projects</p>
+    </div>
   );
 }
