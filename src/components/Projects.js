@@ -63,7 +63,7 @@ export default function Projects() {
     const handleTouchMove = (e) => {
       if (!isDragging.current) return;
       const x = e.touches[0].clientX;
-      const walk = (startX.current - x) * 50;
+      const walk = (startX.current - x) * 1000;
       container.scrollLeft = scrollLeft.current + walk;
     };
 
