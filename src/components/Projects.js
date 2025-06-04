@@ -7,53 +7,6 @@ export default function Projects() {
   const startX = useRef(0);
   const scrollLeft = useRef(0);
 
-  const scrollByOffset = (offset) => {
-    const container = containerRef.current;
-    if (!container) return;
-    const maxScrollLeft = container.scrollWidth - container.clientWidth;
-
-    if (offset > 0 && container.scrollLeft + offset >= maxScrollLeft) {
-      container.scrollTo({ left: 0, behavior: 'smooth' });
-    } else if (offset < 0 && container.scrollLeft + offset <= 0) {
-      container.scrollTo({ left: maxScrollLeft, behavior: 'smooth' });
-    } else {
-      container.scrollBy({ left: offset, behavior: 'smooth' });
-    }
-  };
-
-  // Touch drag support
-  useEffect(() => {
-    const container = containerRef.current;
-    if (!container) return;
-
-    const handleTouchStart = (e) => {
-      isDragging.current = true;
-      startX.current = e.touches[0].clientX;
-      scrollLeft.current = container.scrollLeft;
-    };
-
-    const handleTouchMove = (e) => {
-      if (!isDragging.current) return;
-      const x = e.touches[0].clientX;
-      const walk = (startX.current - x); // swipe left = positive
-      container.scrollLeft = scrollLeft.current + walk;
-    };
-
-    const handleTouchEnd = () => {
-      isDragging.current = false;
-    };
-
-    container.addEventListener('touchstart', handleTouchStart);
-    container.addEventListener('touchmove', handleTouchMove);
-    container.addEventListener('touchend', handleTouchEnd);
-
-    return () => {
-      container.removeEventListener('touchstart', handleTouchStart);
-      container.removeEventListener('touchmove', handleTouchMove);
-      container.removeEventListener('touchend', handleTouchEnd);
-    };
-  }, []);
-
   const projects = [
     {
       title: "Airline Ticket Reservation System",
@@ -77,11 +30,70 @@ export default function Projects() {
     }
   ];
 
+  useEffect(() => {
+    const container = containerRef.current;
+    if (!container) return;
+
+    const handleTouchStart = (e) => {
+      isDragging.current = true;
+      startX.current = e.touches[0].clientX;
+      scrollLeft.current = container.scrollLeft;
+    };
+
+    const handleTouchMove = (e) => {
+      if (!isDragging.current) return;
+      const x = e.touches[0].clientX;
+      const walk = startX.current - x;
+      container.scrollLeft = scrollLeft.current + walk;
+    };
+
+    const handleTouchEnd = () => {
+      isDragging.current = false;
+    };
+
+    const handleMouseDown = (e) => {
+      isDragging.current = true;
+      container.classList.add('dragging');
+      startX.current = e.pageX;
+      scrollLeft.current = container.scrollLeft;
+    };
+
+    const handleMouseMove = (e) => {
+      if (!isDragging.current) return;
+      e.preventDefault();
+      const x = e.pageX;
+      const walk = (startX.current - x) * 1.2;
+      container.scrollLeft = scrollLeft.current + walk;
+    };
+
+    const handleMouseUp = () => {
+      isDragging.current = false;
+      container.classList.remove('dragging');
+    };
+
+    container.addEventListener('touchstart', handleTouchStart);
+    container.addEventListener('touchmove', handleTouchMove);
+    container.addEventListener('touchend', handleTouchEnd);
+    container.addEventListener('mousedown', handleMouseDown);
+    container.addEventListener('mousemove', handleMouseMove);
+    container.addEventListener('mouseup', handleMouseUp);
+    container.addEventListener('mouseleave', handleMouseUp);
+
+    return () => {
+      container.removeEventListener('touchstart', handleTouchStart);
+      container.removeEventListener('touchmove', handleTouchMove);
+      container.removeEventListener('touchend', handleTouchEnd);
+      container.removeEventListener('mousedown', handleMouseDown);
+      container.removeEventListener('mousemove', handleMouseMove);
+      container.removeEventListener('mouseup', handleMouseUp);
+      container.removeEventListener('mouseleave', handleMouseUp);
+    };
+  }, []);
+
   return (
-    <div className="section">
+    <div className="section" id="projects">
       <h2 className="neon">Projects</h2>
       <div className="carousel-wrapper">
-        <div className="carousel-nav" onClick={() => scrollByOffset(-240)}>&#10094;</div>
         <div className="carousel-container" ref={containerRef}>
           <div className="carousel">
             {projects.map((project, index) => (
@@ -92,9 +104,8 @@ export default function Projects() {
             ))}
           </div>
         </div>
-        <div className="carousel-nav" onClick={() => scrollByOffset(240)}>&#10095;</div>
       </div>
-      <p className="note">Swipe or use arrows to navigate through projects</p>
+      <p className="note">Swipe or drag to scroll through projects</p>
     </div>
   );
 }
