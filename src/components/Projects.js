@@ -45,7 +45,7 @@ export default function Projects() {
       if (!isDragging.current) return;
       e.preventDefault();
       const x = e.pageX;
-      const walk = (startX.current - x) * 1.2;
+      const walk = (startX.current - x) * 3;
       container.scrollLeft = scrollLeft.current + walk;
     };
 
