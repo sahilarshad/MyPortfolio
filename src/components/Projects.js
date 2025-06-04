@@ -54,22 +54,10 @@ export default function Projects() {
       container.classList.remove('dragging');
     };
 
-    const handleTouchStart = (e) => {
-      isDragging.current = true;
-      startX.current = e.touches[0].clientX;
-      scrollLeft.current = container.scrollLeft;
-    };
+    container.addEventListener('touchstart', handleTouchStart);
+    container.addEventListener('touchmove', handleTouchMove);
+    container.addEventListener('touchend', handleTouchEnd);
 
-    const handleTouchMove = (e) => {
-      if (!isDragging.current) return;
-      const x = e.touches[0].clientX;
-      const walk = (startX.current - x) * 1000;
-      container.scrollLeft = scrollLeft.current + walk;
-    };
-
-    const handleTouchEnd = () => {
-      isDragging.current = false;
-    };
 
     const loopScroll = () => {
       if (isDragging.current || !container) return;
