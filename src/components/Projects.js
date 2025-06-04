@@ -45,7 +45,7 @@ export default function Projects() {
       if (!isDragging.current) return;
       e.preventDefault();
       const x = e.pageX;
-      const walk = (startX.current - x) * 10;
+      const walk = (startX.current - x) * 2;
       container.scrollLeft = scrollLeft.current + walk;
     };
 
@@ -63,7 +63,7 @@ export default function Projects() {
     const handleTouchMove = (e) => {
       if (!isDragging.current) return;
       const x = e.touches[0].clientX;
-      const walk = startX.current - x;
+      const walk = (startX.current - x) * 2;
       container.scrollLeft = scrollLeft.current + walk;
     };
 
