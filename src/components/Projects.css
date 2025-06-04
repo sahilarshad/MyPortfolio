@@ -1,9 +1,5 @@
 .carousel-wrapper {
-  display: flex;
-  align-items: center;
-  gap: 1rem;
   width: 100%;
-  overflow: hidden;
   padding: 0 1rem;
 }
 
@@ -11,9 +7,13 @@
   overflow-x: auto;
   -webkit-overflow-scrolling: touch;
   scroll-behavior: smooth;
-  scrollbar-width: none;
   scroll-snap-type: x mandatory;
-  -ms-overflow-style: none;
+  cursor: grab;
+}
+
+.carousel-container.dragging {
+  cursor: grabbing;
+  scroll-behavior: auto;
 }
 
 .carousel-container::-webkit-scrollbar {
@@ -21,19 +21,14 @@
 }
 
 .carousel {
-  padding: 1rem 0.5rem;
-  scroll-padding: 0.5rem;
   display: flex;
-  gap: 1rem;
+  gap: 1.5rem;
   padding: 1rem 0;
 }
 
 .carousel-item {
-  min-width: 240px;
-  max-width: 300px;
-  flex: 0 0 auto;
   scroll-snap-align: start;
-  scroll-snap-stop: always;
+  flex: 0 0 auto;
   background-color: rgba(255, 255, 255, 0.03);
   padding: 1rem;
   border-radius: 10px;
@@ -44,7 +39,9 @@
   justify-content: flex-start;
   text-align: left;
   transition: transform 0.3s;
-  cursor: grab;
+  width: 100%;
+  max-width: 300px;
+  box-sizing: border-box;
 }
 
 .carousel-item:hover {
@@ -55,6 +52,7 @@
   font-size: 1.05rem;
   margin-bottom: 0.75rem;
   color: #39ff14;
+  word-wrap: break-word;
 }
 
 .carousel-item p {
@@ -62,22 +60,9 @@
   line-height: 1.6;
   color: #ccc;
   text-align: justify;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
 }
-
-/* .carousel-nav {
-  background-color: rgba(0, 0, 0, 0.6);
-  border: 1px solid #39ff14;
-  color: #39ff14;
-  cursor: pointer;
-  padding: 0.5rem 1rem;
-  font-size: 1.2rem;
-  user-select: none;
-  transition: background 0.3s;
-}
-
-.carousel-nav:hover {
-  background-color: rgba(0, 255, 255, 0.2);
-} */
 
 .note {
   font-size: 0.85rem;
@@ -86,12 +71,10 @@
   margin-top: 1rem;
 }
 
+/* Responsive: cards expand to nearly full screen on small devices */
 @media (max-width: 768px) {
   .carousel-item {
-    min-width: 85%;
-  }
-
-  .carousel-wrapper {
-    flex-direction: row;
+    min-width: 90%;
+    max-width: 90%;
   }
 }
