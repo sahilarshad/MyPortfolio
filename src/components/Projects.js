@@ -34,6 +34,26 @@ export default function Projects() {
     const container = containerRef.current;
     if (!container) return;
 
+    const handleMouseDown = (e) => {
+      isDragging.current = true;
+      startX.current = e.pageX;
+      scrollLeft.current = container.scrollLeft;
+      container.classList.add('dragging');
+    };
+
+    const handleMouseMove = (e) => {
+      if (!isDragging.current) return;
+      e.preventDefault();
+      const x = e.pageX;
+      const walk = (startX.current - x) * 1.2;
+      container.scrollLeft = scrollLeft.current + walk;
+    };
+
+    const handleMouseUp = () => {
+      isDragging.current = false;
+      container.classList.remove('dragging');
+    };
+
     const handleTouchStart = (e) => {
       isDragging.current = true;
       startX.current = e.touches[0].clientX;
@@ -51,42 +71,35 @@ export default function Projects() {
       isDragging.current = false;
     };
 
-    const handleMouseDown = (e) => {
-      isDragging.current = true;
-      container.classList.add('dragging');
-      startX.current = e.pageX;
-      scrollLeft.current = container.scrollLeft;
+    const loopScroll = () => {
+      if (isDragging.current || !container) return;
+
+      container.scrollLeft += 1;
+      if (container.scrollLeft >= container.scrollWidth - container.clientWidth - 1) {
+        container.scrollLeft = 0;
+      }
     };
 
-    const handleMouseMove = (e) => {
-      if (!isDragging.current) return;
-      e.preventDefault();
-      const x = e.pageX;
-      const walk = (startX.current - x) * 1.2;
-      container.scrollLeft = scrollLeft.current + walk;
-    };
-
-    const handleMouseUp = () => {
-      isDragging.current = false;
-      container.classList.remove('dragging');
-    };
-
-    container.addEventListener('touchstart', handleTouchStart);
-    container.addEventListener('touchmove', handleTouchMove);
-    container.addEventListener('touchend', handleTouchEnd);
     container.addEventListener('mousedown', handleMouseDown);
     container.addEventListener('mousemove', handleMouseMove);
     container.addEventListener('mouseup', handleMouseUp);
     container.addEventListener('mouseleave', handleMouseUp);
 
+    container.addEventListener('touchstart', handleTouchStart);
+    container.addEventListener('touchmove', handleTouchMove);
+    container.addEventListener('touchend', handleTouchEnd);
+
+    const interval = setInterval(loopScroll, 30);
+
     return () => {
-      container.removeEventListener('touchstart', handleTouchStart);
-      container.removeEventListener('touchmove', handleTouchMove);
-      container.removeEventListener('touchend', handleTouchEnd);
+      clearInterval(interval);
       container.removeEventListener('mousedown', handleMouseDown);
       container.removeEventListener('mousemove', handleMouseMove);
       container.removeEventListener('mouseup', handleMouseUp);
       container.removeEventListener('mouseleave', handleMouseUp);
+      container.removeEventListener('touchstart', handleTouchStart);
+      container.removeEventListener('touchmove', handleTouchMove);
+      container.removeEventListener('touchend', handleTouchEnd);
     };
   }, []);
 
